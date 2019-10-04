@@ -1,6 +1,6 @@
 # Machine-Learning-Self-Review
 
-Keep track of key points in Machine Learning.
+Keep track of key points in Machine Learning, SQL, and Leetcode Algorithm Notes.
 
 Keep updating!
 
