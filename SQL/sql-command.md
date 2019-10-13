@@ -289,7 +289,7 @@ FETCH FIRST n ROWS ONLY has the following benefits: When you use FETCH statement
 
 Window Functions
 ------------------
-
+Window functions allow us to make SQL statements about rows related to the current row during processing. like subquery
 ```
 AVG() OVER (PARTITION BY column_name)
 FIRST_VALUE(salary) OVER (PARTITION BY department ORDER BY salary DESC)
