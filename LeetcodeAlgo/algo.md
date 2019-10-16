@@ -1,3 +1,5 @@
+
+## Binary Search
 ### 167.TWO-SUM SORTED
 
 普通方法是binary search，也可以用hash，重点是把位置当成dict的values，边找边存
@@ -10,6 +12,9 @@ class Solution:
                 return [dic[target-numbers[i]]+1,i+1]
             dic[numbers[i]]=i
 ```
+
+
+## Math
 ### 69. sqrt(x)
 
 Newton's Method
@@ -76,7 +81,7 @@ Finally, the code is simply:
 return int((math.sqrt(8 * n + 1)-1)/2)
 ```
 
-
+## Stack
 ###20. Valid Parentheses
 用stack解决matching的问题
 ```
@@ -92,4 +97,71 @@ class Solution:
             else:
                 left_bracket.pop()
         return not left_bracket
+```
+
+## Sort
+### 977. Squares of a Sorted Array
+
+因为是sorted list，有好性质，可以从左右开始向中间推进，O(n)的做法是
+
+```
+def sortedSquares(A):
+    l,r = 0, len(A)-1
+    res = []
+    result =[]
+    while l <= r:
+        left,right = abs(A[l]),abs(A[r])
+        if left > right:
+            res.append(left**2)
+            l += 1
+        else:
+            res.append(right**2)
+            r -= 1
+
+    return res[::-1]
+
+```
+
+也可以用heap（之后回来看），或者一个巧妙的方法：
+
+先建好长度固定的list，通过研究左右指针和放置元素的关系：
+
+```
+def sortedSquares(self, A):
+    answer = [0] * len(A)
+    l, r = 0, len(A) - 1
+    while l <= r:
+        left, right = abs(A[l]), abs(A[r])
+        if left > right:
+            answer[r - l] = left * left
+            l += 1
+        else:
+            answer[r - l] = right * right
+            r -= 1
+    return answer
+
+```
+
+### 88. Merge Sorted Array
+和上一题相似的一道题，也是通过研究两个指针和放置元素的关系：
+```
+def merge(nums1,m,n,nums2):
+    if m == 0 and n!= 0:
+        nums1 = nums2
+        return nums1
+    if n == 0:
+        return nums1
+    while m>=1 and n >= 1:
+        if nums2[n-1] > nums1[m-1]:
+            nums1[n+m-1] = nums2[n-1]
+            n -= 1
+        else:
+            nums1[n+m-1] = nums1[m-1]
+            m -= 1
+    if n > 0:
+        nums1[:n] = nums2[:n]
+    return nums1
+
+
+
 ```
