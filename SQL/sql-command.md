@@ -1,9 +1,4 @@
----
-title: sql-command
-date: 2019-09-17 10:25:51
-tags: Database
-categories: 笔记Notes
----
+
 DATABASE DESIGN
 ==================
 
@@ -605,3 +600,14 @@ GROUP BY 1, 2
 ```
 *GROUP BY 1,2*
 *IF OR CASE WHEN*
+
+1211. Queries Quality and Percentage
+------------------
+*Case When 便捷用法*
+
+```
+select query_name, round(avg(rating/position), 2) as quality,
+       round(100*avg(case when rating<3 then 1 else 0 end), 2) as poor_query_percentage
+from Queries
+group by query_name
+```
