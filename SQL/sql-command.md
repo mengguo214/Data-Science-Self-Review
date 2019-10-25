@@ -640,3 +640,52 @@ FROM Project
 GROUP BY project_id
 ORDER BY COUNT(employee_id) DESC
 ```
+
+1083. Sales Analysis II
+------------------
+
+```
+SELECT s.buyer_id
+FROM Sales AS s INNER JOIN Product AS p
+ON s.product_id = p.product_id
+GROUP BY s.buyer_id
+HAVING SUM(CASE WHEN p.product_name = 'S8' THEN 1 ELSE 0 END) > 0
+AND SUM(CASE WHEN p.product_name = 'iPhone' THEN 1 ELSE 0 END) = 0;
+```
+
+我的思路： accepted should come from request:
+
+```
+select ifnull(round(1 - sum(num) / count(num),2),0 )as accept_rate
+from
+(select sum(case when accept_date is null then 1 else 0 end) as num
+from
+friend_request left join request_accepted
+on sender_id = requester_id and send_to_id = accepter_id
+group by sender_id, send_to_id) as mid
+
+```
+
+if not:
+```
+select ifnull(round(r.num2/ f.num,2),0 ) as accept_rate
+from
+(select count(distinct sender_id, send_to_id) as num
+from friend_request) as f
+join
+(select count(distinct requester_id, accepter_id) as num2
+from
+request_accepted) as r
+```
+
+other format:
+
+```
+SELECT IFNULL(ROUND(
+            (SELECT COUNT(DISTINCT requester_id, accepter_id) FROM request_accepted)
+            /
+            (SELECT COUNT(DISTINCT sender_id, send_to_id) FROM friend_request),
+        2), 0)
+AS accept_rate
+
+```
