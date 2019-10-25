@@ -222,6 +222,13 @@ ORDER BY
 END);
 ```
 
+(n) Cast()
+
+transfer types
+
+```
+CAST('2019-01-01' AS DATE)
+```
 
 (5) EXISTS
 ------------------
@@ -610,4 +617,26 @@ select query_name, round(avg(rating/position), 2) as quality,
        round(100*avg(case when rating<3 then 1 else 0 end), 2) as poor_query_percentage
 from Queries
 group by query_name
+```
+
+1076. Project Employees II
+------------------
+In MSSQL,
+
+SOLUTION 1:
+```
+select temp.project_id
+from (select project_id, rank() over( order by count(distinct employee_id) desc) as rnk
+from project
+group by project_id) as temp
+where rnk = 1
+```
+
+SOLUTION 2:
+
+```
+SELECT TOP 1 WITH TIES project_id
+FROM Project
+GROUP BY project_id
+ORDER BY COUNT(employee_id) DESC
 ```
