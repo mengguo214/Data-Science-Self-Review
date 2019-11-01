@@ -689,3 +689,29 @@ SELECT IFNULL(ROUND(
 AS accept_rate
 
 ```
+
+1204. Last Person to Fit in the Elevator
+------------------
+
+关于roll up，关键在于join的时候把小于该行的都归纳然后group by取和。
+我的tedious做法其实本质就是想找小于该列的和<=1000，到该列后>1000的临界点。
+其实别人方法很简单：
+
+我一开始思路也是如此，但取的时候是`HAVING SUM(q2.weight) >= 1000` 取最小，思路反了，这样就无法包含不到1000的情况，
+正确思路应该是`HAVING SUM(q2.weight) <= 1000` 取最大就好了
+
+```
+SELECT q1.person_name
+FROM Queue q1, Queue q2
+WHERE q1.turn >= q2.turn
+GROUP BY q1.turn
+HAVING SUM(q2.weight) <= 1000
+ORDER BY SUM(q2.weight) DESC
+LIMIT 1
+```
+
+1045. Customers Who Bought All Products
+------------------
+本来还在考虑怎么防止有客户买的product没在product table里的情况，
+但只要做一个join就可以解决了
+有人提到product_id是customer table的foreign key，所以这种情况不会出现 - makes sense!
