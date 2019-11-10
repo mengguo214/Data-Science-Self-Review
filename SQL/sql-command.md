@@ -715,3 +715,16 @@ LIMIT 1
 本来还在考虑怎么防止有客户买的product没在product table里的情况，
 但只要做一个join就可以解决了
 有人提到product_id是customer table的foreign key，所以这种情况不会出现 - makes sense!
+
+626. Exchange Seats
+------------------
+用join的话效率很低，这里用了case when + lead
+```
+select case when id%2=0 then id-1
+when id%2 != 0 and lead(id,1) over (order by id asc) is not null then id + 1
+when id%2 != 0 and lead(id,1) over (order by id asc) is null then id
+
+end as id, student
+from seat
+order by id asc
+```
