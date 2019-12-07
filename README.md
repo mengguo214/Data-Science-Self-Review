@@ -1,7 +1,17 @@
-# Machine-Learning-Self-Review
+# Data-Science-Self-Review
 
 Keep track of key points in Machine Learning, SQL, and Leetcode Algorithm Notes.
 
 Keep updating!
 
-Machine learning (ML) is the scientific study of algorithms and statistical models that computer systems use to perform a specific task without using explicit instructions, relying on patterns and inference instead. It is seen as a subset of artificial intelligence. Machine learning algorithms build a mathematical model based on sample data, known as "training data", in order to make predictions or decisions without being explicitly programmed to perform the task. Machine learning algorithms are used in a wide variety of applications, such as email filtering and computer vision, where it is difficult or infeasible to develop a conventional algorithm for effectively performing the task.
+## 1. Machine Learning 
+
+Focus on basic Machine Learning Algorithms. Combination of knowledge from books and lectures.
+
+## 2. SQL
+
+Focus on SQL handy conclusions, including sample questions.
+
+## 3. Leetcode Algorithm Notes
+
+Notes of my thoughts on how to solve problems and good solutions from others.
