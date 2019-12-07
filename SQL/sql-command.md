@@ -292,29 +292,49 @@ FETCH FIRST n ROWS ONLY has the following benefits: When you use FETCH statement
 Window Functions
 ------------------
 Window functions allow us to make SQL statements about rows related to the current row during processing. like subquery
+
+1. Aggregate: AVG, SUM, COUNT, MIN, MAX
+
+2. OFFSET: LAG, LEAD, FIRST_VALUE, LAST_VALUE
+
 ```
 AVG() OVER (PARTITION BY column_name)
 FIRST_VALUE(salary) OVER (PARTITION BY department ORDER BY salary DESC)
 ```
-
-give info about where it lies in the whole group
-```
-RANK() OVER (PARTITION BY department ORDER BY salary DESC)
-```
-
 give the values of row value that came before the current processed row:
 ```
-LAG(salary) OVER (PARTITION BY department ORDER BY salary DESC)
+LAG(salary, n, m) OVER (PARTITION BY department ORDER BY salary DESC)
 ```
+后n个和前n个; null 变成 m
 give the values of row value that came next the current processed row:
 ```
-LEAD(salary) OVER (PARTITION BY department ORDER BY salary DESC)
+LEAD(salary, n, m) OVER (PARTITION BY department ORDER BY salary DESC)
 ```
+
+3. RANK
+give info about where it lies in the whole group, 应用在全表的时候可以不用PARTITION BY
+```
+ROW_NUMBER() OVER (PARTITION BY department ORDER BY salary DESC)
+RANK() OVER (PARTITION BY department ORDER BY salary DESC)
+DENSE_RANK() OVER (PARTITION BY department ORDER BY salary DESC)
+```
+还可以group by后根据group后的值进行window rank
 
 give info about quartile
 ```
 NTILE(4) OVER (PARTITION BY department ORDER BY salary DESC)
 ```
+
+4. Calculate Running total
+
+BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW 是默认值
+```
+SUM(TOTAL) OVER (ORDER BY Order_Date ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)
+
+```
+
+(6) COALESCE(A,B,C) -> Return the first Non-NULL value.可以用来将null值转化为其他值。
+
 
 (6) IN
 ------------------
