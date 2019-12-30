@@ -554,6 +554,16 @@ FROM Weather as a, Weather as b
 WHERE DATEDIFF(a.recorddate, b.recorddate) = 1 AND (a.Temperature > b.Temperature)
 ```
 
+*add/substract date in sql server*
+```
+DATEADD(MONTH, -5, '9/1/2011')
+```
+*add/substract date in mysql*
+```
+DATE_ADD('9/1/2011', INTERVAL 1 DAY)
+```
+
+
 627. Swap Salary
 ------------------
 类if else语句的case
