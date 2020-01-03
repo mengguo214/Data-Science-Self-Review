@@ -197,7 +197,7 @@ SELECT Address || ', ' || PostalCode || ' ' || City || ', ' || Country AS Addres
 FROM Customers;
 ```
 
-(4) CASE
+(4) CASE WHEN
 ------------------
 The CASE statement goes through conditions and returns a value when the first condition is met (like an IF-THEN-ELSE statement). So, once a condition is true, it will stop reading and return the result. If no conditions are true, it returns the value in the ELSE clause.
 
@@ -221,8 +221,16 @@ ORDER BY
     ELSE City
 END);
 ```
+活用case when 可以大大提高query效率和可读性： case when + aggregation
+```sum(case when ... then .... else ...end) as
+count(case when ... then .... else ...end) as
+```
+一次join算好几个metrics，大大提高效率和可读性
 
-(n) Cast()
+
+
+
+(5) Cast()
 
 transfer types
 
@@ -230,7 +238,7 @@ transfer types
 CAST('2019-01-01' AS DATE)
 ```
 
-(5) EXISTS
+(6) EXISTS
 ------------------
 The EXISTS operator is used to test for the existence of any record in a subquery.
 
@@ -253,7 +261,7 @@ exists ( select * from [table] where ... )
 This is most useful where you have if conditional statements, as exists can be a lot quicker than count.`
 
 
-(11) Functions TBD
+(7) Functions TBD
 ------------------
 
 MIN(), MAX(), COUNT(), AVG(), SUM()
@@ -333,10 +341,10 @@ SUM(TOTAL) OVER (ORDER BY Order_Date ROWS BETWEEN UNBOUNDED PRECEDING AND CURREN
 
 ```
 
-(6) COALESCE(A,B,C) -> Return the first Non-NULL value.可以用来将null值转化为其他值。
+(8) COALESCE(A,B,C) -> Return the first Non-NULL value.可以用来将null值转化为其他值。
 
 
-(6) IN
+(9) IN
 ------------------
 
 The in is best used where you have a static list to pass:
@@ -348,7 +356,7 @@ WHERE [field] in (1, 2, 3);
 
 
 
-(7) LIKE OR SIMILAR TO
+(10) LIKE OR SIMILAR TO
 ------------------
 The LIKE operator is used in a WHERE clause to search for a specified pattern in a column.
 
@@ -371,7 +379,7 @@ _	Represents a single character; h_t finds hot, hat, and hit
 
 
 
-(8) JOINs
+(11) JOINs
 ------------------
 Here are the different types of the JOINs in SQL:
 
@@ -391,7 +399,7 @@ ORDER BY A.City;
 ```
 
 
-(9) NULL
+(12) NULL
 ------------------
 
 `WHERE column_name IS/IS NOT NULL;`
@@ -415,8 +423,12 @@ FROM Products;
 ```
 !不同sql上语法不同，sql server上是isnull(column_name,0),Oracle: NVL(column_name,0)
 
+In SQL server:
+```
+ISNULL(,)
+```
 
-(10) UNION
+(13) UNION
 ------------------
 The UNION operator is used to combine the result-set of two or more SELECT statements.
 
@@ -450,6 +462,37 @@ FROM Suppliers;
 
 *Make the first column name as Type*
 
+
+(14) Date Method
+
+mysql里不可以date之间运算
+
+```
+SELECT a.Id
+FROM Weather as a, Weather as b
+WHERE DATEDIFF(a.recorddate, b.recorddate) = 1 AND (a.Temperature > b.Temperature)
+```
+
+*add/substract date in sql server*
+```
+DATEADD(MONTH, -5, '9/1/2011')
+```
+*add/substract date in mysql*
+```
+DATE_ADD('9/1/2011', INTERVAL 1 DAY)
+```
+
+在sql server里取date：left(date, n) 或 Month(date)
+
+
+(15) With clause
+```
+WITH query_name1 AS (),
+query_name2 AS ()
+
+SELECT * FROM query_name1 JOIN query_name2
+
+```
 
 
 
