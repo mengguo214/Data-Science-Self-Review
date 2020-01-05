@@ -340,6 +340,12 @@ BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW 是默认值
 SUM(TOTAL) OVER (ORDER BY Order_Date ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)
 
 ```
+5. 取中位数
+我的方法是用 ntile(2) 然后分奇偶情况取
+或者用row_number正排和倒排，中位数是正排==倒排或者正排==倒排+1｜-1
+
+
+
 
 (8) COALESCE(A,B,C) -> Return the first Non-NULL value.可以用来将null值转化为其他值。
 
