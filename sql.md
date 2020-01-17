@@ -332,23 +332,37 @@ DENSE_RANK() OVER (PARTITION BY department ORDER BY salary DESC)
 ```
 还可以group by后根据group后的值进行window rank
 
+4. nth_value (& first_value) and ntile
+Unsurprisngly nth_value will return the nth_value, but if we do not specify a range it will return null if the current value is less than the nth. If we always want something displayed we need to specify a range
+
+ntile(n) divides the group into n equal partitions and denotes which partition each row is in.
+
+Let us go back to our race and print how much faster a runner needs to go to finish on the podium (1st, 2nd or 3rd), the time of the second runner and finally we will use ntile(2) to determine if they are in the top half of runners
+```
+ select name, time,
+ nth_value(time, 3) over (order by time) - time as to_go_faster_to_make_podium,
+ nth_value(time, 2) over (order by time RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) as time_of_second_runner,
+ ntile(2) over (order by time) as which_half
+ FROM runners order by time;
+ ```
+
 give info about quartile
 ```
 NTILE(4) OVER (PARTITION BY department ORDER BY salary DESC)
 ```
 
-4. Calculate Running total
+5. Calculate Running total
 
 BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW 是默认值
 ```
 SUM(TOTAL) OVER (ORDER BY Order_Date ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)
 
 ```
-5. 取中位数
+6. 取中位数
 我的方法是用 ntile(2) 然后分奇偶情况取
 或者用row_number正排和倒排，中位数是正排==倒排或者正排==倒排+1｜-1
 
-6. Preceding and Following
+7. Preceding and Following
 Preceding and Following allow us to perform aggregate functions on the rows just before and after the current row.
 
 ```
@@ -366,7 +380,7 @@ sum(weight) over (order by weight desc rows between unbounded preceding and curr
 order by weight desc
 ```
 
-7. Cume_dist & Percent_rank
+8. Cume_dist & Percent_rank
 These 2 functions calculate the relative rank of a group of rows
 
 percent_rank returns a number from 1 to 0. The highest being 1 and the lowest 0.
@@ -377,6 +391,37 @@ Think of it this way: If there are 4 different values do you count down from 1 i
  percent_rank() over (order by time),
  cume_dist() over (order by time)
  FROM runners order by time
+```
+```
+select
+name,
+weight,
+cast(cume_dist() over (order by weight)*100 as int)
+ from cats
+order by weight
+```
+
+9. Filter
+Filter is to be used with aggregate functions or window functions. It allows us to filter out values
+
+In this example we print average runner time and then filter on the runners weighing less than 90kg to produce the light_runners_time column which will result in bob (UK) being removed.
+```
+select country,
+avg(time) as avg_time,
+avg(time) filter (where weight < 90) as light_runners_time
+from runners group by country
+```
+
+10. Array Agg
+Array Agg is not a window function but it is interresting
+
+Array Agg allows us to select several entries into one. Think of it as compressing the values into an Array object
+```
+select array_agg(time) from runners;
+```
+```
+array_agg
+{101,103,104,104,108}
 ```
 
 (8) COALESCE(A,B,C) -> Return the first Non-NULL value.可以用来将null值转化为其他值。
