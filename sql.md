@@ -320,6 +320,10 @@ LEAD(salary, n, m) OVER (PARTITION BY department ORDER BY salary DESC)
 ```
 
 3. RANK
+These three functions will number each row. Using row_number gives a result that must always be unique. Each row is assigned a different value even if they are equal
+
+The easiest way to explain rank and dense_rank is to imagine ranking the runners of a race. Consider: If 2 runners finish in equal 3rd, is the next runner's place 4th (dense_rank) or 5th (rank).
+
 give info about where it lies in the whole group, 应用在全表的时候可以不用PARTITION BY
 ```
 ROW_NUMBER() OVER (PARTITION BY department ORDER BY salary DESC)
@@ -344,8 +348,36 @@ SUM(TOTAL) OVER (ORDER BY Order_Date ROWS BETWEEN UNBOUNDED PRECEDING AND CURREN
 我的方法是用 ntile(2) 然后分奇偶情况取
 或者用row_number正排和倒排，中位数是正排==倒排或者正排==倒排+1｜-1
 
+6. Preceding and Following
+Preceding and Following allow us to perform aggregate functions on the rows just before and after the current row.
 
+```
+select
+name, weight,
+min(weight) over (order by name ROWS between 1 preceding and 1 following)
+from runners order by name
+```
+*Use Unbounded Preceding to make sure you don't include extra rows if 2 rows evaluate to the same thing*
+```
+select
+name,
+sum(weight) over (order by weight desc rows between unbounded preceding and current row)
+ from cats
+order by weight desc
+```
 
+7. Cume_dist & Percent_rank
+These 2 functions calculate the relative rank of a group of rows
+
+percent_rank returns a number from 1 to 0. The highest being 1 and the lowest 0.
+cume_dist will return a number from 1 towards 0 but never 0.
+Think of it this way: If there are 4 different values do you count down from 1 in steps of 0.25 (percent_rank) or in steps of 0.2 ensuring that we never hit 0 (cume_dist)
+```
+ select name, time,
+ percent_rank() over (order by time),
+ cume_dist() over (order by time)
+ FROM runners order by time
+```
 
 (8) COALESCE(A,B,C) -> Return the first Non-NULL value.可以用来将null值转化为其他值。
 
@@ -478,6 +510,11 @@ SELECT a.Id
 FROM Weather as a, Weather as b
 WHERE DATEDIFF(a.recorddate, b.recorddate) = 1 AND (a.Temperature > b.Temperature)
 ```
+in sql server:
+
+```
+SELECT DATEDIFF(year, '2017/08/25', '2011/08/25') AS DateDiff;
+```
 
 *add/substract date in sql server*
 ```
@@ -489,6 +526,7 @@ DATE_ADD('9/1/2011', INTERVAL 1 DAY)
 ```
 
 在sql server里取date：left(date, n) 或 Month(date)
+in sqllite: strftime('%Y', ratingdate)
 
 
 (15) With clause
