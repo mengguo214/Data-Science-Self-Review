@@ -437,6 +437,22 @@ SELECT * FROM [table]
 WHERE [field] in (1, 2, 3);
 ```
 
+11. window
+```
+SELECT
+  ts,
+  group_name,
+  metric,
+  value,
+  AVG(value) OVER w as mov_avg,
+  CASE
+    WHEN ((value - AVG(value) OVER w)) / (STDEV(value)) OVER w )) > 3 THEN 1
+    ELSE 0
+  END AS is_outlier
+FROM events
+WINDOW w AS (PARTITION BY group_name, metric ORDER BY ts ROWS BETWEEN 10 PRECEDING AND 1 PRECEDING)
+ORDER BY ts ASC
+```
 
 
 (10) LIKE OR SIMILAR TO
